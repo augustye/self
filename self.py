@@ -82,9 +82,17 @@ if __name__ == '__main__':
 	process_images()
 	show_images('components')
 	show_images('images', count=4)
-	
-#sprite数据结构: 造型列表，x/y，遮挡标志，当前造型id
-#sprite造型重叠判断
 
-		
+#pose数据结构: 图像，遮挡标志
+#sprite数据结构: poses数组
+#sprites数据结构: sprite数组
+
+#image trim --> position + pose
+#为pose寻找sprite id和pose id --> 已有或者新建sprite
+
+#处理所有背景+人物
+#生成world：(sprite id，pose id，position)列表
+
+
+
 
