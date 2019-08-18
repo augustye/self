@@ -63,7 +63,7 @@ def process_image(index, img):
 	if index == 2:
 		save_sprite(index, img)
 					
-def show_images(folder,count=100):
+def show_images(folder,count=IMAGES):
 	from IPython import display as d
 	files = os.listdir(folder)
 	files.sort()
