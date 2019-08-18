@@ -78,10 +78,10 @@ def show_images(folder,count=100):
 					return
 				
 if __name__ == '__main__':
-	generate_images()
+	#generate_images()
 	process_images()
 	show_images('components')
-	show_images('images', count=3)
+	show_images('images', count=4)
 	
 #sprite数据结构: 造型列表，x/y，遮挡标志，当前造型id
 #sprite造型重叠判断
