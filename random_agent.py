@@ -9,7 +9,7 @@ env.seed(0)
 obs   = 0
 count = 0
 done  = True
-for i in range(195):
+for i in range(200):
 	if done:
 		env.reset()
 	random_action = env.action_space.sample()
@@ -18,7 +18,7 @@ for i in range(195):
 		count += 1
 		img = Image.fromarray(new_obs, 'RGB')
 		print("i:%3d, count:%d"%(i,count))
-		img.save(f'images/{count}.png')
+		img.save('images/%05d.png'%(count))
 	obs = new_obs
 	env.render()
 env.close()
