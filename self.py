@@ -6,7 +6,21 @@ from PIL import Image
 IMAGES = 100
 WIDTH  = 210
 HEIGHT = 160
-hist  = []
+
+hist    = []
+sprites = []
+
+class Pose:
+	def __init__(self, img, masks=[0,0,0,0]):
+		self.img = img
+		self.top_masked    = bool(masks[0])
+		self.right_masked  = bool(masks[1])
+		self.bottom_masked = bool(masks[2])
+		self.left_masked   = bool(masks[3])
+
+class Sprite:
+	def __init__(self):
+		self.poses = []
 
 def generate_images():
 	env = gym.make("KungFuMaster-v0")
@@ -81,15 +95,10 @@ if __name__ == '__main__':
 	#generate_images()
 	process_images()
 	show_images('components')
-	show_images('images', count=4)
-
-#pose数据结构: 图像，遮挡标志
-#sprite数据结构: poses数组
-#sprites数据结构: sprite数组
+	show_images('images', count=5)
 
 #image trim --> position + pose
 #为pose寻找sprite id和pose id --> 已有或者新建sprite
-
 #处理所有背景+人物
 #生成world：(sprite id，pose id，position)列表
 
