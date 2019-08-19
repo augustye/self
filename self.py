@@ -10,6 +10,7 @@ HEIGHT = 210
 
 hist    = []
 sprites = []
+worlds  = []
 
 class Pose:
 	def __init__(self, img, masks=[0,0,0,0]):
@@ -53,9 +54,9 @@ def process_images():
 		hist.append(obs)	
 		if index < 3:
 			display(img)
-			get_sprite(index, img)	
+			get_world(index, img)	
 
-def get_sprite(index, img):
+def get_world(index, img):
 	
 	if index > 0:
 		diff = hist[index] - hist[0]
@@ -70,8 +71,8 @@ def get_sprite(index, img):
 	im = img.crop(bbox)
 	print('bbox:',bbox)
 	
-	position = bbox[:2]
-	print('position',position)
+	x,y = bbox[:2]
+	print('position',x,y)
 	
 	l_masked = (bbox[0] == 0)
 	t_masked = (bbox[1] == 0)
@@ -79,12 +80,31 @@ def get_sprite(index, img):
 	b_maksed = (bbox[3] == HEIGHT)
 	masks  = [t_masked,r_masked,b_maksed,l_masked]
 	pose   = Pose(im, masks)
-	
-	if index < 2:
+		
+	if index == 0:
 		sprite = Sprite([pose])
 		sprites.append(sprite)
-	else:
-		sprites[-1].poses.append(pose)
+		sprite_id = 0
+		pose_id   = 0
+		world = [[sprite_id, pose_id, x, y]]
+	
+	if index == 1:
+		sprite = Sprite([pose])
+		sprites.append(sprite)
+		sprite_id = 1
+		pose_id   = 0
+		world = [worlds[0][0]]
+		world.append([sprite_id, pose_id, x, y])
+
+	if index == 2:
+		sprites[1].poses.append(pose)
+		sprite_id = 1
+		pose_id   = 1
+		world = [worlds[0][0]]
+		world.append([sprite_id, pose_id, x, y])
+	
+	worlds.append(world)
+	print('world:', world)
 
 def show_sprites():
 	print('sprites:')
@@ -106,12 +126,11 @@ def show_sprites():
 		display(canvas)
 																				
 if __name__ == '__main__':
-	print('version 12')
+	print('version 2')
 	#generate_images()
 	process_images()
 	show_sprites()
 
-#生成world：(sprite id，pose id，position)列表
 #为pose寻找已有的sprite id和pose id 
 
 
