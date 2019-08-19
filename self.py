@@ -2,6 +2,7 @@ import gym
 import numpy as np
 import os
 from PIL import Image,ImageChops
+from IPython.display import display
 
 IMAGES = 100
 WIDTH  = 160
@@ -19,8 +20,8 @@ class Pose:
 		self.left_masked   = bool(masks[3])
 
 class Sprite:
-	def __init__(self):
-		self.poses = []
+	def __init__(self, poses=[]):
+		self.poses = poses
 
 def generate_images():
 	env = gym.make("KungFuMaster-v0")
@@ -50,24 +51,24 @@ def process_images():
 		obs = np.array(img)
 		index = len(hist)
 		hist.append(obs)	
-		process_image(index, img)
+		if index < 3:
+			display(img)
+			get_sprite(index, img)	
 
-def save_background(index, img):
-	img.save('components/background.png')
-
-def save_sprite(index, img):
-	diff = hist[index] - hist[0]
-	diff = np.minimum(diff, 1)*255
-	mask = Image.fromarray(diff, 'RGB')
-	mask = mask.convert('1')
-	mask.save('components/mask%d.png'%(index))
-
-	im = Image.new("RGBA", img.size)
-	im.paste(img, mask)
-	bbox = im.getbbox()
-	im = im.crop(bbox)
+def get_sprite(index, img):
+	
+	if index > 0:
+		diff = hist[index] - hist[0]
+		diff = np.minimum(diff, 1)*255
+		mask = Image.fromarray(diff, 'RGB')
+		mask = mask.convert('1')
+		img2 = Image.new("RGBA", img.size)
+		img2.paste(img, mask)
+		img  = img2
+		
+	bbox = img.getbbox()
+	im = img.crop(bbox)
 	print('bbox:',bbox)
-	im.save('components/sprite%d.png'%(index))
 	
 	position = bbox[:2]
 	print('position',position)
@@ -76,45 +77,41 @@ def save_sprite(index, img):
 	t_masked = (bbox[1] == 0)
 	r_masked = (bbox[2] == WIDTH)
 	b_maksed = (bbox[3] == HEIGHT)
-	masks = [t_masked,r_masked,b_maksed,l_masked]
-	pose = Pose(im, masks)
-	print('masks:',masks)
+	masks  = [t_masked,r_masked,b_maksed,l_masked]
+	pose   = Pose(im, masks)
+	
+	if index < 2:
+		sprite = Sprite([pose])
+		sprites.append(sprite)
+	else:
+		sprites[-1].poses.append(pose)
 
-def process_image(index, img):
-			
-	if index == 0:
-		save_background(index, img)
-
-	if index == 1:
-		save_sprite(index, img)
-
-	if index == 2:
-		save_sprite(index, img)
-					
-def show_images(folder,count=IMAGES):
-	from IPython import display as d
-	files = os.listdir(folder)
-	files.sort()
-	for file in files:
-		if file.endswith(".png"):
-			file = folder + '/' + file
-			with open(file,'rb') as f:
-				print(file)
-				d.display(d.Image(data=f.read()))
-				count -= 1
-				if count == 0:
-					return
-				
+def show_sprites():
+	print('sprites:')
+	for i in range(1,len(sprites)):
+		sprite = sprites[i]
+		imgs = []
+		height = 0
+		width  = 0
+		for pose in sprite.poses:
+			w,h = pose.img.size
+			height = max(height, h)
+			width += w+10
+		canvas = Image.new("RGBA", (width,height))
+		x = 0		
+		for pose in sprite.poses:
+			w,h = pose.img.size
+			canvas.paste(pose.img, (x,0,x+w,h))		
+			x += w+10
+		display(canvas)
+																				
 if __name__ == '__main__':
+	print('version 12')
 	#generate_images()
 	process_images()
-	show_images('components')
-	show_images('images', count=5)
+	show_sprites()
 
-#为pose寻找sprite id和pose id --> 已有或者新建sprite
-#所有背景+人物处理成sprite
 #生成world：(sprite id，pose id，position)列表
-
-
+#为pose寻找已有的sprite id和pose id 
 
 
