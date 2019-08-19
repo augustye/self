@@ -1,7 +1,7 @@
 import gym
 import numpy as np
 import os
-from PIL import Image
+from PIL import Image,ImageChops
 
 IMAGES = 100
 WIDTH  = 210
@@ -64,6 +64,10 @@ def save_sprite(index, img):
 
 	sprite = Image.new("RGBA", img.size)
 	sprite.paste(img, mask)
+	bbox = sprite.getbbox()
+	print('bbox:',bbox)
+	
+	sprite = sprite.crop(bbox)
 	sprite.save('components/sprite%d.png'%(index))
 
 def process_image(index, img):
@@ -97,7 +101,7 @@ if __name__ == '__main__':
 	show_images('components')
 	show_images('images', count=5)
 
-#image trim --> position + pose
+#position + pose
 #为pose寻找sprite id和pose id --> 已有或者新建sprite
 #处理所有背景+人物
 #生成world：(sprite id，pose id，position)列表
