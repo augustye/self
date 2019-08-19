@@ -4,8 +4,8 @@ import os
 from PIL import Image,ImageChops
 
 IMAGES = 100
-WIDTH  = 210
-HEIGHT = 160
+WIDTH  = 160
+HEIGHT = 210
 
 hist    = []
 sprites = []
@@ -62,13 +62,23 @@ def save_sprite(index, img):
 	mask = mask.convert('1')
 	mask.save('components/mask%d.png'%(index))
 
-	sprite = Image.new("RGBA", img.size)
-	sprite.paste(img, mask)
-	bbox = sprite.getbbox()
+	im = Image.new("RGBA", img.size)
+	im.paste(img, mask)
+	bbox = im.getbbox()
+	im = im.crop(bbox)
 	print('bbox:',bbox)
+	im.save('components/sprite%d.png'%(index))
 	
-	sprite = sprite.crop(bbox)
-	sprite.save('components/sprite%d.png'%(index))
+	position = bbox[:2]
+	print('position',position)
+	
+	l_masked = (bbox[0] == 0)
+	t_masked = (bbox[1] == 0)
+	r_masked = (bbox[2] == WIDTH)
+	b_maksed = (bbox[3] == HEIGHT)
+	masks = [t_masked,r_masked,b_maksed,l_masked]
+	pose = Pose(im, masks)
+	print('masks:',masks)
 
 def process_image(index, img):
 			
@@ -101,9 +111,8 @@ if __name__ == '__main__':
 	show_images('components')
 	show_images('images', count=5)
 
-#position + pose
 #为pose寻找sprite id和pose id --> 已有或者新建sprite
-#处理所有背景+人物
+#所有背景+人物处理成sprite
 #生成world：(sprite id，pose id，position)列表
 
 
