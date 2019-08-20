@@ -1,4 +1,4 @@
-import gym
+#import gym
 import numpy as np
 import os
 from PIL import Image,ImageChops
