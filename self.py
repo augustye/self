@@ -2,7 +2,6 @@
 import numpy as np
 import os
 from PIL import Image,ImageChops
-from IPython.display import display
 
 IMAGES = 100
 WIDTH  = 160
@@ -53,7 +52,6 @@ def process_images():
 		index = len(hist)
 		hist.append(obs)	
 		if index < 3:
-			display(img)
 			get_world(index, img)	
 
 def get_world(index, img):
@@ -66,7 +64,7 @@ def get_world(index, img):
 		img2 = Image.new("RGBA", img.size)
 		img2.paste(img, mask)
 		img  = img2
-		
+
 	bbox = img.getbbox()
 	im = img.crop(bbox)
 	print('bbox:',bbox)
@@ -108,7 +106,7 @@ def get_world(index, img):
 
 def show_sprites():
 	print('sprites:')
-	for i in range(1,len(sprites)):
+	for i in range(len(sprites)):
 		sprite = sprites[i]
 		imgs = []
 		height = 0
@@ -123,7 +121,9 @@ def show_sprites():
 			w,h = pose.img.size
 			canvas.paste(pose.img, (x,0,x+w,h))		
 			x += w+10
-		display(canvas)
+		file = 'sprite_%03d.png'%(i)
+		print('saved:', file)
+		canvas.save(file)
 																				
 if __name__ == '__main__':
 	print('version 2')
