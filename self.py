@@ -1,12 +1,10 @@
-#import gym
 import numpy as np
 import os
 from PIL import Image,ImageChops
+from IPython.display import display
 
-IMAGES = 100
-WIDTH  = 160
-HEIGHT = 210
-
+WIDTH   = 160
+HEIGHT  = 210
 hist    = []
 sprites = []
 worlds  = []
@@ -23,26 +21,6 @@ class Sprite:
 	def __init__(self, poses=[]):
 		self.poses = poses
 
-def generate_images():
-	env = gym.make("KungFuMaster-v0")
-	env.seed(0)
-	obs,done = 0,True
-	frames,images = 0,0
-	while images < IMAGES:
-		if done:
-			env.reset()
-		random_action = env.action_space.sample()
-		new_obs,_,done,_= env.step(random_action)
-		if np.any(new_obs-obs):
-			f,i = frames,images
-			print("frame %05d, image %05d"%(f,i))
-			img = Image.fromarray(new_obs, 'RGB')
-			img.save('images/%05d.png'%(images))
-			images += 1
-		frames += 1
-		obs = new_obs
-	env.close()
-
 def process_images():
 	files = os.listdir('images')
 	files.sort()
@@ -52,6 +30,7 @@ def process_images():
 		index = len(hist)
 		hist.append(obs)	
 		if index < 3:
+			display(img)
 			get_world(index, img)	
 
 def get_world(index, img):
@@ -124,10 +103,10 @@ def show_sprites():
 		file = 'sprite_%03d.png'%(i)
 		print('saved:', file)
 		canvas.save(file)
+		display(canvas)
 																				
 if __name__ == '__main__':
 	print('version 2')
-	#generate_images()
 	process_images()
 	show_sprites()
 
