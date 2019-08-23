@@ -62,31 +62,36 @@ def get_world(index, img):
   pose  = Pose(im, masks)
     
   if index == 0:
-    sprite = Sprite([pose])
-    sprites.append(sprite)
-    sprite_id = 0
-    pose_id   = 0
-    item  = [sprite_id,pose_id,x,y]
+    sid, pid = find_sprite(pose)
+    item  = [sid,pid,x,y]
     world = [item]
 
   if index == 1:
-    sprite = Sprite([pose])
-    sprites.append(sprite)
-    sprite_id = 1
-    pose_id   = 0
-    item  = [sprite_id,pose_id,x,y]
+    sid, pid = find_sprite(pose)
+    item  = [sid,pid,x,y]
+    world = [item]
     world = [worlds[0][0], item]
 
   if index == 2:
-    sprites[1].poses.append(pose)
-    sprite_id = 1
-    pose_id   = 1
-    item  = [sprite_id,pose_id,x,y]
+    sid, pid = find_sprite(pose)
+    item  = [sid,pid,x,y]
+    world = [item]
     world = [worlds[0][0], item]
   
   worlds.append(world)
   print('world:', world)
 
+def find_sprite(pose):
+  for s in sprites:
+    sid = sprites.index(s)
+    for p in s.poses:
+      pid = s.poses.index(p)
+      if pose.img == p.img:
+        return sid,pid
+  sprite = Sprite([pose])
+  sprites.append(sprite)
+  return len(sprites)-1, 0
+ 
 def show_sprites():
   print('sprites:')
   for i in range(len(sprites)):
@@ -112,8 +117,9 @@ def show_sprites():
     display(canvas)
                                         
 if __name__ == '__main__':
-  print('version 4')
+  print('version 1')
   process_images()
   show_sprites()
 
-#为pose寻找已有的sprite id和pose id 
+
+ 
