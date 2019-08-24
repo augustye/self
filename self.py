@@ -90,6 +90,17 @@ def find_sprite(pose):
       img2 = p.img
       w1,h1 = img1.size
       w2,h2 = img2.size
+      
+      if w1 != w2:
+        if not p.right_masked:
+          if not pose.right_masked:
+            continue
+            
+      if h1 != h2:
+        if not p.bottom_masked:
+          if not pose.bottom_masked:
+            continue
+      
       w = min(w1, w2)
       h = min(h1, h2)
       box = (0,0,w,h)
@@ -130,9 +141,9 @@ def show_sprites():
     display(canvas)
                                         
 if __name__ == '__main__':
-  print('version 11')
+  print('version 1')
   process_images()
   show_sprites()
 
-#use masks
+
  
