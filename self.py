@@ -12,7 +12,7 @@ worlds  = []
 class Pose:
   def __init__(self,im,masks=None):
     m = masks or [0,0,0,0]
-    self.img           = im
+    self.img = im.convert('RGBA')
     self.top_masked    = bool(m[0])
     self.right_masked  = bool(m[1])
     self.bottom_masked = bool(m[2])
@@ -86,7 +86,20 @@ def find_sprite(pose):
     sid = sprites.index(s)
     for p in s.poses:
       pid = s.poses.index(p)
-      if pose.img == p.img:
+      img1 = pose.img
+      img2 = p.img
+      w1,h1 = img1.size
+      w2,h2 = img2.size
+      w = min(w1, w2)
+      h = min(h1, h2)
+      box = (0,0,w,h)
+      img1 = img1.crop(box)
+      img2 = img2.crop(box)
+      a1 = np.array(img1)
+      a2 = np.array(img2)
+      if not np.any(a1 - a2):
+        if w1>=w2 and h1>=h2:
+          s.poses[pid] = pose
         return sid,pid
   sprite = Sprite([pose])
   sprites.append(sprite)
@@ -117,9 +130,9 @@ def show_sprites():
     display(canvas)
                                         
 if __name__ == '__main__':
-  print('version 1')
+  print('version 11')
   process_images()
   show_sprites()
 
-
+#use masks
  
